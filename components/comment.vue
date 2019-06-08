@@ -5,14 +5,8 @@
       {{ comment.time | timeAgo }} ago
     </div>
     <div class="text" v-html="comment.content"/>
-    <div
-      v-if="comment.comments && comment.comments.length"
-      :class="{ open }"
-      class="toggle"
-    >
-      <a
-        @click="open = !open"
-      >
+    <div v-if="comment.comments && comment.comments.length" :class="{ open }" class="toggle">
+      <a @click="open = !open">
         <!--
           We want minimal things going on here
           So that when it's time to do i18n, it's just
@@ -33,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator"
+import { Component, Prop, Vue } from "nuxt-property-decorator"
 
 @Component
 export default class Comment extends Vue {
@@ -42,7 +36,7 @@ export default class Comment extends Vue {
 
   open: boolean = true
 
-  pluralize (open, n) {
+  pluralize(open, n) {
     // Should we have vue-i18n;
     // We could also leverage Intl.NumberFormat
     // https://kazupon.github.io/vue-i18n/guide/number.html#custom-formatting
@@ -52,9 +46,9 @@ export default class Comment extends Vue {
     // We could use vue-i18n $tc helper
     // Assuming 'replies' would be 'Replies collapsed | Reply collapsed | Replies collapsed'
     // https://kazupon.github.io/vue-i18n/guide/pluralization.html
-    const textContent = n === 1 ? 'reply' : 'replies' // this.$tc('replies', n)
+    const textContent = n === 1 ? "reply" : "replies" // this.$tc('replies', n)
 
-    const append = open ? '' : 'collapsed' // this.$t('collapsed')
+    const append = open ? "" : "collapsed" // this.$t('collapsed')
 
     return `${number} ${textContent} ${append}`.trim()
   }
@@ -116,6 +110,7 @@ export default class Comment extends Vue {
 
     &.open {
       background-color: transparent;
+
       a:before {
         // −
         // https://unicode-table.com/en/2212/

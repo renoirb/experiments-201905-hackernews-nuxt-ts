@@ -16,9 +16,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator"
+import {
+  Component,
+  Watch,
+  Vue,
+  namespace,
+  State
+} from "nuxt-property-decorator"
 import { Transition } from "@nuxt/vue-app"
 import { Route } from "vue-router"
+
+const FeedStateModule = namespace("feed")
 
 const Item = () =>
   import(/* webpackChunkName: "components--item" */ "~/components/item.vue")
@@ -47,9 +55,6 @@ import { feeds, validFeeds } from "~/common/api"
   validate({ params: { feed } }) {
     return validFeeds.includes(feed)
   },
-  fetch({ store, params: { feed, page = 1 } }) {
-    return store.dispatch("feed/FETCH_FEED", { feed, page })
-  },
   head(this: Page) {
     return {
       title: feeds[this.$route.params.feed].title
@@ -57,12 +62,20 @@ import { feeds, validFeeds } from "~/common/api"
   }
 })
 export default class Page extends Vue {
+  @State(state => state.feed.feeds) feeds
+  @State(state => state.feed.items) items
+  @FeedStateModule.Action("FETCH_FEED") dispatchFetchFeed
+
   displayedPage: number = 1
   transition:
     | null
     | string
     | Transition
     | ((to: Route, from: Route) => string) = "slide-right"
+
+  public fetch({ params: { feed, page = 1 } }) {
+    return this.dispatchFetchFeed({ feed, page })
+  }
 
   get feed() {
     const params = this.$route.params
@@ -84,12 +97,12 @@ export default class Page extends Vue {
   get pageData() {
     const feed = this.feed || "news"
     const page = this.page
-    const data = this.$store.state.feed.feeds[feed][page]
+    const data = this.feeds[feed][page]
     return data
   }
 
   get displayedItems() {
-    const items = this.$store.state.feed.items
+    const items = this.items
     return this.pageData.map(id => items[id])
   }
 
@@ -109,13 +122,11 @@ export default class Page extends Vue {
     }
 
     // Prefetch next page
-    this.$store
-      .dispatch("feed/FETCH_FEED", {
-        feed: this.feed,
-        page: this.page + 1,
-        prefetch: true
-      })
-      .catch(() => {})
+    this.dispatchFetchFeed({
+      feed: this.feed,
+      page: this.page + 1,
+      prefetch: true
+    }).catch(() => {})
 
     this.transition =
       from === -1 ? null : to > from ? "slide-left" : "slide-right"

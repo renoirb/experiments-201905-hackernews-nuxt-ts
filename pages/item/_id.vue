@@ -29,10 +29,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { Component, Vue, State, namespace } from "nuxt-property-decorator"
 
-const Comment = () => import(/* webpackChunkName: "components--comment" */ '~/components/comment.vue')
-const LazyWrapper = () => import(/* webpackChunkName: "components--lazy-wrapper" */ '~/components/lazy-wrapper.vue')
+const FeedStateModule = namespace("feed")
+
+const Comment = () =>
+  import(
+    /* webpackChunkName: "components--comment" */ "~/components/comment.vue"
+  )
+const LazyWrapper = () =>
+  import(
+    /* webpackChunkName: "components--lazy-wrapper" */ "~/components/lazy-wrapper.vue"
+  )
 
 @Component({
   components: {
@@ -43,18 +51,23 @@ const LazyWrapper = () => import(/* webpackChunkName: "components--lazy-wrapper"
     return {
       title: this.item.title
     }
-  },
-  fetch({ store, params: { id } }) {
-    return store.dispatch("feed/FETCH_ITEM", { id })
   }
 })
 export default class ItemView extends Vue {
+  @State(state => state.feed.items) items
+  @FeedStateModule.Action("FETCH_ITEM") dispatchFetchItem
+
+  fetch({ params: { id } }) {
+    return this.dispatchFetchItem({ id })
+  }
+
   get id() {
     return this.$route.params.id
   }
 
   get item() {
-    return this.$store.state.feed.items[this.id]
+    const id = this.id
+    return this.items[id]
   }
 }
 </script>

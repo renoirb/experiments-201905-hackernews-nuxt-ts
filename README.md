@@ -77,10 +77,11 @@ This repository is originally ported from [vue-hackernews-2.0](https://github.co
 
 ## Docs
 
-- [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
-- [vuex-class](https://github.com/ktsn/vuex-class/)
-- [vue-class-component](https://github.com/vuejs/vue-class-component)
-- [vue-i18n](https://github.com/kazupon/vue-i18n) ([docs](https://kazupon.github.io/vue-i18n/))
+- [nuxt-property-decorator](https://github.com/nuxt-community/nuxt-property-decorator)
+  - [vue-property-decorator](https://github.com/kaorun343/vue-property-decorator)
+  - [vue-class-component](https://github.com/vuejs/vue-class-component)
+  - [vuex-class](https://github.com/ktsn/vuex-class/)
+  - [nuxt-class-component](https://github.com/nuxt-community/nuxt-class-component)
 
 ### Useful _TypeScript_ + _Nuxt.js_ community curated examples
 

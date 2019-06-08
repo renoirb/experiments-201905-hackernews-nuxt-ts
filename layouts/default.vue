@@ -19,7 +19,7 @@
 </template>
 
 <script  lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { Component, Vue } from "nuxt-property-decorator"
 
 import { feeds } from "~/common/api"
 import { NuxtPageHeadLink } from "~/lib/models"

@@ -28,7 +28,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator"
+import { Component, Vue, State, namespace } from "nuxt-property-decorator"
+
+const UserStateModule = namespace("user")
 
 const LazyWrapper = () =>
   import(
@@ -41,19 +43,22 @@ const LazyWrapper = () =>
   },
   head(this: UserView) {
     return this.user ? this.user.id : "User not found"
-  },
+  }
+})
+export default class UserView extends Vue {
+  @State(state => state.user.items) items
+  @UserStateModule.Action("FETCH_USER") dispatchFetchUser
+
   fetch({
-    store,
     route: {
       params: { id }
     }
   }) {
-    return store.dispatch("user/FETCH_USER", { id })
+    return this.dispatchFetchUser({ id })
   }
-})
-export default class UserView extends Vue {
+
   get user() {
-    return this.$store.state.user.items[this.$route.params.id]
+    return this.items[this.$route.params.id]
   }
 }
 </script>
